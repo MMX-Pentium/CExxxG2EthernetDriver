@@ -73,6 +73,6 @@ Ubuntu標準モジュールへ戻ります。
 
 ## ライセンス
 
-リポジトリ独自の文書・スクリプトはトップレベルの `LICENSE`（MIT）に従います。
-カーネルモジュールと同梱 `ixgbe` ソースは各ファイルの SPDX 表記および
-`debian/copyright` に従い、GPL-2.0 です。
+このリポジトリ全体はGNU General Public License version 2 only
+（`GPL-2.0-only`）で提供します。詳細はトップレベルの `LICENSE`、各ソースファイルの
+SPDX表記、および `debian/copyright` を参照してください。

@@ -1,0 +1,14 @@
+[Unit]
+Description=CE100G2 Marvell 88E6190 switch setup
+After=systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/ce100g2-switch/setup
+TimeoutStartSec=450
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

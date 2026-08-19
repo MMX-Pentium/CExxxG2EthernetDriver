@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ce100g2-switch
+Source: local
+
+Files: *
+Copyright: 2026 CE100G2Driver project
+License: GPL-2.0
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License version 2.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 2 can be found in /usr/share/common-licenses/GPL-2.
+
+Files: ixgbe/*
+Copyright: 1999-2024 Intel Corporation
+License: GPL-2.0

@@ -1,0 +1,55 @@
+#!/bin/sh
+set -eu
+
+modprobe ixgbe
+modprobe mv88e6xxx
+modprobe ce100g2_switch
+
+# Both I211 ports are external copper connectors.  The first is the factory
+# management port and the second is WAN.  Bring both administratively up so
+# the PHY and front-panel link LED work even before a network configuration is
+# assigned to WAN.
+for devpath in /sys/bus/pci/devices/*; do
+	[ -r "$devpath/vendor" ] || continue
+	[ -r "$devpath/device" ] || continue
+	[ "$(cat "$devpath/vendor")" = "0x8086" ] || continue
+	[ "$(cat "$devpath/device")" = "0x1539" ] || continue
+	for netpath in "$devpath"/net/*; do
+		[ -e "$netpath" ] || continue
+		ip link set dev "${netpath##*/}" up
+	done
+done
+
+# The original appliance disables these offloads on both X553 DSA masters.
+# Do the same, without relying on distribution-dependent interface names.
+for devpath in /sys/bus/pci/devices/*; do
+	[ -r "$devpath/vendor" ] || continue
+	[ -r "$devpath/device" ] || continue
+	[ "$(cat "$devpath/vendor")" = "0x8086" ] || continue
+	[ "$(cat "$devpath/device")" = "0x15c2" ] || continue
+	for netpath in "$devpath"/net/*; do
+		[ -e "$netpath" ] || continue
+		iface=${netpath##*/}
+		ip link set dev "$iface" up
+		ethtool -K "$iface" gro off gso off 2>/dev/null || true
+	done
+done
+
+# Registration is asynchronous so ixgbe may finish probing first.
+i=0
+while [ "$i" -lt 420 ]; do
+	if [ -e /sys/class/net/lan8 ]; then
+		# The board glue forces the CPU links immediately after DSA setup.
+		for iface in lan1 lan2 lan3 lan4 lan5 lan6 lan7 lan8; do
+			[ -e "/sys/class/net/$iface" ] || continue
+			ip link set dev "$iface" up
+		done
+		sleep 3
+		exit 0
+	fi
+	i=$((i + 1))
+	sleep 1
+done
+
+echo "ce100g2-switch: lan8 did not appear; inspect: journalctl -k -b" >&2
+exit 1

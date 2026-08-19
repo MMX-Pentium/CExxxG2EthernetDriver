@@ -1,0 +1,16 @@
+Source: ce100g2-switch
+Section: kernel
+Priority: optional
+Maintainer: CE100G2Driver project <root@localhost>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: ce100g2-switch-dkms
+Architecture: all
+Depends: dkms, ethtool, iproute2, ${misc:Depends}
+Recommends: linux-headers-generic
+Description: CE100G2 X553 and Marvell 88E6190 switch drivers
+ Board-specific glue connecting the Intel X553 MDIO bus to Linux's upstream
+ mv88e6xxx DSA driver, plus an Ubuntu ixgbe build fixing the X553 2.5G PCS,
+ for Trend Micro Cloud Edge CE100G2 and matching Lanner NCA-2011 appliances.

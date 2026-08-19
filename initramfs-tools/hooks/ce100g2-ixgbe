@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case "$1" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+# MODULES=most can copy the currently loaded in-tree ixgbe rather than the
+# DKMS override. Resolve ixgbe through modules.dep explicitly so the initramfs
+# contains and selects updates/dkms/ixgbe.ko.
+manual_add_modules ixgbe

@@ -1,0 +1,58 @@
+#!/bin/sh
+
+echo "== system =="
+printf 'kernel: '
+uname -r
+printf 'vendor: '
+cat /sys/class/dmi/id/sys_vendor 2>/dev/null || echo unknown
+printf 'product: '
+cat /sys/class/dmi/id/product_name 2>/dev/null || echo unknown
+
+echo
+echo "== X553 PCI functions =="
+if command -v lspci >/dev/null 2>&1; then
+	lspci -nnk -d 8086:15c2
+else
+	echo "lspci is not installed"
+fi
+
+echo
+echo "== I211 management/WAN PCI functions =="
+if command -v lspci >/dev/null 2>&1; then
+	lspci -nnk -d 8086:1539
+else
+	echo "lspci is not installed"
+fi
+
+echo
+echo "== driver modules =="
+lsmod | awk 'NR == 1 || $1 ~ /^(ce100g2_switch|mv88e6xxx|ixgbe)$/ { print }'
+modinfo ce100g2_switch 2>/dev/null | awk '/^(filename|version|vermagic|parm):/ { print }'
+echo "-- ixgbe --"
+modinfo ixgbe 2>/dev/null | awk '/^(filename|version|srcversion|vermagic):/ { print }'
+
+echo
+echo "== network interfaces =="
+ip -br link
+
+echo
+echo "== MDIO devices =="
+for mdiodev in /sys/bus/mdio_bus/devices/*; do
+	[ -e "$mdiodev" ] || continue
+	printf '%s modalias=' "${mdiodev##*/}"
+	cat "$mdiodev/modalias" 2>/dev/null || printf '?\n'
+	if [ -L "$mdiodev/driver" ]; then
+		printf '  driver=%s\n' "$(basename "$(readlink "$mdiodev/driver")")"
+	else
+		echo "  driver=(unbound)"
+	fi
+done
+
+echo
+echo "== relevant kernel log =="
+if command -v journalctl >/dev/null 2>&1; then
+	journalctl -k -b --no-pager 2>/dev/null | \
+		grep -Ei 'ce100g2|bypass relay|mv88e6|dsa|ixgbe-mdio|igb|CPU port.*PHY' | tail -n 100 || true
+else
+	dmesg 2>/dev/null | grep -Ei 'ce100g2|bypass relay|mv88e6|dsa|ixgbe-mdio|igb|CPU port.*PHY' | tail -n 100 || true
+fi

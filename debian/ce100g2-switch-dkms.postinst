@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+	configure)
+		# Older packages did not unregister DKMS on the "upgrade" prerm
+		# action. Their source symlink may now be dangling, which makes even
+		# `dkms status` and `dkms autoinstall` fail. Remove only the known
+		# stale versions before registering this one.
+		for old_version in 0.1.0 0.1.1 0.1.2 0.1.3 0.1.4 0.1.5 0.1.6 0.1.7 0.1.8 0.1.9; do
+			dkms remove -m ce100g2-switch -v "$old_version" --all \
+				>/dev/null 2>&1 || true
+			if [ -d "/var/lib/dkms/ce100g2-switch/$old_version" ]; then
+				rm -rf "/var/lib/dkms/ce100g2-switch/$old_version"
+			fi
+		done
+		dkms remove -m ce100g2-switch -v 0.1.10 --all >/dev/null 2>&1 || true
+		dkms add -m ce100g2-switch -v 0.1.10
+		dkms autoinstall -m ce100g2-switch -v 0.1.10
+		# MODULES=most can otherwise retain the currently loaded in-tree
+		# ixgbe. The packaged hook explicitly adds the DKMS override.
+		if command -v update-initramfs >/dev/null 2>&1; then
+			update-initramfs -u -k all
+		fi
+		if command -v systemctl >/dev/null 2>&1; then
+			systemctl enable ce100g2-switch.service >/dev/null 2>&1 || true
+		fi
+		;;
+esac
+
+#DEBHELPER#
+exit 0

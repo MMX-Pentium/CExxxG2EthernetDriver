@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+
+override_dh_auto_clean:
+
+override_dh_auto_install:
+	install -d debian/ce100g2-switch-dkms/usr/src/ce100g2-switch-0.1.10
+	install -m 0644 ce100g2_switch.c Makefile dkms.conf \
+		debian/ce100g2-switch-dkms/usr/src/ce100g2-switch-0.1.10/
+	install -d debian/ce100g2-switch-dkms/usr/src/ce100g2-switch-0.1.10/ixgbe
+	install -m 0644 ixgbe/Makefile \
+		$(filter-out ixgbe/ixgbe.mod.c,$(wildcard ixgbe/*.c)) ixgbe/*.h \
+		debian/ce100g2-switch-dkms/usr/src/ce100g2-switch-0.1.10/ixgbe/
+	install -d debian/ce100g2-switch-dkms/usr/lib/ce100g2-switch
+	install -m 0755 scripts/ce100g2-switch-setup \
+		debian/ce100g2-switch-dkms/usr/lib/ce100g2-switch/setup
+	install -d debian/ce100g2-switch-dkms/usr/sbin
+	install -m 0755 scripts/ce100g2-switch-status \
+		debian/ce100g2-switch-dkms/usr/sbin/ce100g2-switch-status
+	install -d debian/ce100g2-switch-dkms/lib/systemd/system
+	install -m 0644 systemd/ce100g2-switch.service \
+		debian/ce100g2-switch-dkms/lib/systemd/system/
+	install -d debian/ce100g2-switch-dkms/etc/modprobe.d
+	install -m 0644 modprobe/ce100g2-switch.conf \
+		debian/ce100g2-switch-dkms/etc/modprobe.d/
+	install -d debian/ce100g2-switch-dkms/etc/initramfs-tools/hooks
+	install -m 0755 initramfs-tools/hooks/ce100g2-ixgbe \
+		debian/ce100g2-switch-dkms/etc/initramfs-tools/hooks/
+	install -d debian/ce100g2-switch-dkms/usr/share/doc/ce100g2-switch-dkms
+	install -m 0644 README.md docs/解析レポート.md \
+		debian/ce100g2-switch-dkms/usr/share/doc/ce100g2-switch-dkms/

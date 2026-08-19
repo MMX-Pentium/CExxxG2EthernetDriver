@@ -1,0 +1,78 @@
+ce100g2-switch (0.1.10-1) noble; urgency=medium
+
+  * Restart the 88E6190 CPU-port internal PHYs when PCS status is not ready.
+  * Bring lan1 through lan8 administratively up after DSA registration.
+  * Verify recovery on an NCA-2011Z-TM2J whose LAN ports stayed down on 0.1.9.
+
+ -- CE100G2 Driver Project <noreply@example.invalid>  Wed, 19 Aug 2026 12:00:00 +0900
+
+ce100g2-switch (0.1.9-1) noble; urgency=medium
+
+  * Select the powered-on NIC mode of the LAN8/WAN hardware bypass relay.
+  * Bring both external Intel I211 ports up so WAN can negotiate link.
+
+ -- CE100G2 Driver Project <noreply@example.invalid>  Wed, 19 Aug 2026 01:00:00 +0900
+
+ce100g2-switch (0.1.8-1) noble; urgency=medium
+
+  * Force the DKMS ixgbe into initramfs and refresh installed initramfs images.
+  * Restore Ubuntu's in-tree ixgbe to initramfs after package removal.
+  * Record successful 2.5G X553 uplink validation on the target appliance.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 20:00:00 +0000
+
+ce100g2-switch (0.1.7-1) noble; urgency=medium
+
+  * Force the CE100G2 X553 non-SFP setup request to 2.5G.
+  * Ignore a stale 1G autoneg_advertised value left by the reset PCS.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 19:00:00 +0000
+
+ce100g2-switch (0.1.6-1) noble; urgency=medium
+
+  * Preserve 2.5G in the CE100G2 non-SFP link configuration path.
+  * Retry transient X553 EEPROM checksum failures during concurrent probe.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 18:00:00 +0000
+
+ce100g2-switch (0.1.5-1) noble; urgency=medium
+
+  * Add an Ubuntu 6.8.0-100 based ixgbe DKMS module.
+  * Force the CE100G2 X553 PCS to fixed 2.5G after reset.
+  * Restrict the X553 workaround to supported Lanner DMI product names.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 17:00:00 +0000
+
+ce100g2-switch (0.1.4-1) noble; urgency=medium
+
+  * Select 2500BASE-X CMODE on the two 88E6190 CPU ports.
+  * Log the CPU-port status/CMODE values for hardware diagnosis.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 15:00:00 +0000
+
+ce100g2-switch (0.1.3-1) noble; urgency=medium
+
+  * Force 88E6190 CPU ports 9/10 to 2500base-x full-duplex link-up.
+  * Wait for all eight DSA ports without delaying independent networking.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 13:00:00 +0000
+
+ce100g2-switch (0.1.2-1) noble; urgency=medium
+
+  * Remove stale DKMS registrations left by upgrades from 0.1.0/0.1.1.
+  * Add a module version so the running driver can be verified.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 12:00:00 +0000
+
+ce100g2-switch (0.1.1-1) noble; urgency=medium
+
+  * Set the MDIO bus match callback so mv88e6xxx probes the switch.
+  * Detect and report a failed mv88e6xxx probe.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 11:30:00 +0000
+
+ce100g2-switch (0.1.0-1) noble; urgency=medium
+
+  * Initial Ubuntu Server 24.04 DKMS package.
+
+ -- CE100G2Driver project <root@localhost>  Tue, 18 Aug 2026 00:00:00 +0900

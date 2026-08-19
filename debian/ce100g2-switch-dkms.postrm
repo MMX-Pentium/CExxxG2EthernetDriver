@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+	remove|purge)
+		# Refresh after dpkg has removed the initramfs hook, so the next boot
+		# returns to Ubuntu's in-tree ixgbe.
+		if command -v update-initramfs >/dev/null 2>&1; then
+			update-initramfs -u -k all || true
+		fi
+		;;
+esac
+
+#DEBHELPER#
+exit 0
